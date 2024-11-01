@@ -1,0 +1,30 @@
+post  http://localhost:3000/register/
+Content-Type:application/json
+
+{
+  "username": "ja",
+  "password": "Sjakeer@201",
+  "name": "Adam Richard",
+  "gender": "male"
+}
+
+post http://localhost:3000/login/
+Content-Type:application/json
+
+{
+  "username":"ja",
+  "password":"Sjakeer@201"
+}
+
+get http://localhost:3000/user/tweets/feed
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImphIiwiaWF0IjoxNzMwNDUxMzkxfQ.0vsiVO5ZjK39pQtG9Vkn_Oy4VYDzqO2lggmZPSkMvhU
+
+
+get http://localhost:3000/get/
+
+get http://localhost:3000/user/following
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImphIiwiaWF0IjoxNzMwNDQ4OTMxfQ.MlgQ4M564ViVXbsxHVnd9z7AyTmMlK4KfXuLqQFQO04
+
+
+get http://localhost:3000/user/followers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImphIiwiaWF0IjoxNzMwNDQ4OTMxfQ.MlgQ4M564ViVXbsxHVnd9z7AyTmMlK4KfXuLqQFQO04
