@@ -154,24 +154,43 @@ app.get('/get/', async (req, res) => {
 // ApI 3
 
 app.get('/user/tweets/feed/', authentication, async (req, res, next) => {
-  const {username} = req
-  const followingPeopleIds = await getFollowingPeopleIdsOfUser(username)
+  try {
+    const {username} = req
 
-  const getTweetQuery = ` select 
-  username,tweet,date_time as dataTime
-  
-  from user inner join tweet on user.user_id=tweet.user_id
-  
-  where 
-  
-  user.user_id in (${followingPeopleIds})
-  
-  order by date_time desc
-  
-  limit 4`
+    // Get the IDs of people the authenticated user is following
+    const followingPeopleIds = await getFollowingPeopleIdsOfUser(username)
 
-  const tweets = await db.all(getTweetQuery)
-  res.send(tweets)
+    if (followingPeopleIds.length === 0) {
+      return res.send([]) // No followed users, so return an empty feed
+    }
+
+    // Format followingPeopleIds for SQL IN clause
+    const placeholders = followingPeopleIds.map(() => '?').join(',')
+
+    // Define query with placeholders
+    const tweetsQuery = `
+      SELECT
+        user.username,
+        tweet.tweet,
+        tweet.date_time AS dateTime
+      FROM
+        follower
+      INNER JOIN tweet ON follower.following_user_id = tweet.user_id
+      INNER JOIN user ON tweet.user_id = user.user_id
+      WHERE
+        follower.follower_user_id IN (${placeholders})
+      ORDER BY
+        tweet.date_time DESC
+      LIMIT 4;
+    `
+
+    // Execute the query with followingPeopleIds as parameters
+    const tweets = await db.all(tweetsQuery, followingPeopleIds)
+    res.send(tweets)
+  } catch (error) {
+    console.error('Error fetching tweets feed:', error)
+    res.status(500).send('An error occurred while fetching the tweets feed.')
+  }
 })
 
 // API 4
